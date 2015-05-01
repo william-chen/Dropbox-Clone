@@ -6,16 +6,10 @@ let Promise = require('songbird')
 let errorHandler = e => console.log(e.stack)
 let root = '/'
 
-let traverseFolder = (currentPath, parentFolder) => {
+let traverseFolder = (currentPath) => {
     return new Promise( (resolve) => {
         fs.promise.readdir(currentPath)
             .then((files) => {
-                let currentFolder = []
-                let folder = {}
-                folder[currentPath] = currentFolder
-                // { path: [filename, subFolder: [...] ] }
-                parentFolder.push(folder)
-
                 Promise.all(files.map((filename) => {
                         return fs.promise.stat(path.join(currentPath, filename))
                     }))
@@ -23,14 +17,18 @@ let traverseFolder = (currentPath, parentFolder) => {
                         var promises = []
                         let allFiles = (files.filter((filename, index) => {
                             if (stats[index].isDirectory()) {
-                                promises.push(traverseFolder(path.join(currentPath, filename), currentFolder))
+                                promises.push(traverseFolder(path.join(currentPath, filename)))
                             } else {
-                                currentFolder.push(filename)
                                 promises.push(Promise.resolve(filename))
                             }
                         }))
 
-                        resolve(Promise.all(promises))
+                        Promise.all(promises).then((files) =>{
+                            console.log('files', files)
+                            let folderStructure = {}
+                            folderStructure[currentPath] = files
+                            resolve(folderStructure)
+                        })
                     })
                     .catch(errorHandler)
             })
@@ -42,12 +40,11 @@ http.createServer((req,res) => {
     console.log('listing folder', req.url)
     let rootDir = req.url
 
-    let files = []
-    traverseFolder(rootDir, files)
-        .then(() => {
+    traverseFolder(rootDir)
+        .then((folderStructure) => {
             res.statusCode = 200
             res.setHeader('Content-Type', 'application/json; charset=utf-8')
-            res.end(`${JSON.stringify(files)}\n`)
+            res.end(`${JSON.stringify(folderStructure)}\n`)
         })
         .catch((error) => {
             console.log(error.stack)
