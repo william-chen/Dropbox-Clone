@@ -1,0 +1,36 @@
+{
+  "name": "Dropbox-Clone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --exec babel-node -- --stage 1 --optional strict -- index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/william-chen/Dropbox-Clone.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/william-chen/Dropbox-Clone/issues"
+  },
+  "homepage": "https://github.com/william-chen/Dropbox-Clone",
+  "dependencies": {
+    "bluebird": "^2.9.25",
+    "bluebird-nodeify": "^1.0.0",
+    "body-parser": "^1.12.3",
+    "express": "^4.12.3",
+    "insync": "^1.0.0",
+    "json-over-tcp": "^0.3.2",
+    "lodash": "^3.7.0",
+    "longjohn": "^0.2.4",
+    "mime-types": "^2.0.10",
+    "mkdirp": "^0.5.0",
+    "morgan": "^1.5.2",
+    "rimraf": "^2.3.3",
+    "songbird": "^1.0.1",
+    "yargs": "^3.8.0"
+  }
+}
